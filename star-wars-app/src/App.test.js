@@ -23,8 +23,43 @@ jest.mock("axios", () => {
     };
 });
 
+// jest.mock("axios");
+
 test("made an api call", async () => {
     const wrapper = rtl.render(<App />);
-    await wrapper.findByText(/luke skywalker/i);
-    expect(axios.get).toHaveBeenCalled();
+    // const data = {
+    //     data: {
+    //         next: "https:swapi.co/api/people/?page=2",
+    //         previous: null,
+    //         results: [
+    //             {
+    //                 name: "Luke Skywalker"
+    //             }
+    //         ]
+    //     }
+    // };
+    // axios.get.mockImplementationOnce(() => Promise.resolve(data));
+
+    // await wrapper.findByText(/luke skywalker/i);
+    await expect(axios.get).toHaveBeenCalled();
+});
+
+test("luke skywalker renders to screen", async () => {
+    const wrapper = rtl.render(<App />);
+    const luke = await wrapper.findByText(/luke skywalker/i);
+    expect(luke).toHaveTextContent("Luke Skywalker");
+});
+
+test("next fires api call", async () => {
+    const wrapper = rtl.render(<App />);
+    const nextBtn = wrapper.getByText(/next/i);
+
+    rtl.act(() => {
+        rtl.fireEvent.click(nextBtn);
+    });
+
+    // const hanSolo = await wrapper.findByText(/han solo/i);
+    await expect(axios.get).toHaveBeenCalled();
+
+    // expect(hanSolo).toHaveTextContent("Han Solo");
 });
